@@ -1,0 +1,170 @@
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            <small>مدیریت کاربران</small>
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="<?php $this->baseUrl() ?>/dashboard"><i class="fa fa-dashboard"></i> خانه</a></li>
+        </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="modal" id="infousers">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">اطلاعات کاربران</h4>
+                    </div>
+                    <div class="modal-body" id="modalcontent">
+                        <p>لطفا شکیبا باشید.یسستم در حال دریافت اطلاعات می باشد</p>
+                    </div>
+                    <div class="modal-footer">
+                        <div id="resultsave"></div>
+                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">بستن</button>
+                        <button type="button" onclick="savemodal();" class="btn btn-primary">ذخیره</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->  
+        <!-- Main row -->
+        <div class="row">
+            <div class="col-lg-3">            
+                <div class="input-group">
+                    <div class="input-group-btn"  data-toggle="modal" onclick="editmodal('adduser', null)"  data-target="#infousers">
+                        <a class="btn  btn-info">
+                            افزودن کاربر جدید
+                            <i class="fa fa-fw fa-gear" data-toggle="modal" data-target="#infousers"></i>
+                        </a>
+                    </div><!-- /btn-group -->
+                </div>
+            </div>
+        </div><!-- /.row -->
+        <br/>
+        <div class="row">
+            <section class="col-lg-12 connectedSortable">
+                <table id="usersdatatbl" class="table table-striped table-bordered" style="width:100%">
+                    <thead>
+                        <tr>
+
+                            <th>نام کاربری</th>
+                            <th>سطح دسترسی</th>
+                            <th>تغییر رمز عبور</th>
+                            <th>وضعیت</th>
+                            <th>اجبار گزارش غیبت</th>
+                            <th>عملیات</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+
+
+                    </tbody>
+                    <tfoot>
+                        <tr>
+
+                            <th>نام کاربری</th>
+                            <th>سطح دسترسی</th>
+                            <th>تغییر رمز عبور</th>
+                            <th>وضعیت</th>
+                            <th>اجبار گزارش غیبت</th>
+                            <th>عملیات</th>
+
+                        </tr>
+                    </tfoot>
+                </table>
+            </section><!-- right col -->
+        </div><!-- /.row (main row) -->
+
+    </section><!-- /.content -->
+</div><!-- /.content-wrapper -->
+<script>
+    function savemodal(id) {
+        var action = $('#formuser').attr('action');
+        if (action == "saveaddusers" || action == "savepasswordusers") {
+            if ($('#pwd').val() != $('#duppwd').val()) {
+                bootbox.alert({message: '<div class="alert alert-danger">تکرار پسورد مغایرت دارد</div>', locale: 'fa'});
+                return;
+            }
+        }
+        $.ajax({
+            url: "/users/" + action,
+            method: "POST",
+            data: $('#formuser').serialize()
+        })
+                .done(function (html) {
+                    $('#resultsave').html(html);
+                    setTimeout(function () {
+                        $('#resultsave').html("");
+                    }, 3000);
+
+                    var table = $('#usersdatatbl').DataTable().ajax.reload();
+                });
+    }
+    function editmodal(action, data) {
+        $.ajax({
+            url: "<?php echo $this->baseUrl() ?>/users/" + action,
+            method: "POST",
+            data: data
+        })
+                .done(function (html) {
+                    $("#modalcontent").html(html);
+                });
+    }
+    function deletemodal(id, name) {
+
+        bootbox.confirm({message: "آیا برای حذف نام کاربری " + name + " مطمئن هستید؟", locale: 'fa', callback: function (result) {
+                if (result) {
+                    $.ajax({
+                        url: "/users/deleteusers",
+                        method: "POST",
+                        data: {name: name}
+                    })
+                            .done(function (result) {
+                                bootbox.alert({message: result, locale: 'fa'});
+                                var table = $('#usersdatatbl').DataTable().ajax.reload();
+
+                            });
+                }
+            }});
+    }
+    function saveactive(name, val, parent2) {
+        $.ajax({
+            url: "/users/updateactive",
+            method: "POST",
+            data: {name: name, active: val}
+        })
+                .done(function (result) {
+                    bootbox.alert({message: result, locale: 'fa'});
+                });
+    }
+    function saveforce(name, val) {
+        $.ajax({
+            url: "/users/updateforce",
+            method: "POST",
+            data: {name: name, force: val}
+        })
+                .done(function (result) {
+                    bootbox.alert({message: result, locale: 'fa'});
+                });
+    }
+    $(document).ready(function () {
+        $('#usersdatatbl').DataTable(
+                {
+                    destroy: true,
+                    dom: 'Blfrtip', buttons: ['excel'],
+
+                    lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'همه']],
+                    "language":
+                            {
+                                url: '/dist/js/datatable/fa.json',
+                            },
+                    processing: true,
+                    serverSide: true,
+                    ajax: '/users/getalluserlist',
+                });
+    });
+</script>

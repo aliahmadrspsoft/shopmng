@@ -1,0 +1,63 @@
+<form id="formaddrow" method="post" action="manager/edit" class="form-horizontal">
+
+    <div class="box-body">
+
+
+        <div class="form-group">
+            <label for="inputEmail3" class="col-sm-2 control-label">شماره دانشجویی</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="code" value="" placeholder="شماره دانشجویی ">
+                <input type="hidden" name="codecart" id="hidden-codecart"/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="MYTIME" class="col-sm-2 control-label">زمان تردد </label>
+            <div class="col-sm-10">
+                <input type="time" name="MYTIME" class="form-control" id="MYTIME" /> 
+
+               
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="INOUT_TYPE" class="col-sm-2 control-label">نوع تردد </label>
+            <div class="col-sm-10">
+                <select name="INOUT_TYPE" class="form-control" id="INOUT_TYPE" >
+                    <?php
+                    $arrayinouttype = array(1 => 'تردد حضور', 2 => 'تردد مرخصی روزانه', 3 => 'تردد مرخصی ساعتی');
+                    foreach ($arrayinouttype as $keyinout => $valinout):
+                        ?>
+                        <option value="<?php echo $keyinout ?>"><?php echo $valinout ?>
+                        </option>
+                        <?php
+                    endforeach;
+                    ?>
+                </select >
+
+                <br/>         
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="comment" class="col-sm-2 control-label">توضیحات </label>
+            <div class="col-sm-10">
+                <textarea id="comment" name="COMMENT" rows="3" cols="40"></textarea>               
+            </div>
+        </div>
+
+
+    </div><!-- /.box-body -->
+
+</form>
+<script>
+    $(document).ready(function () {
+
+        var dataSource =<?php echo json_encode($this->students) ?>;
+        $('#code').autocomplete({
+            valueField: '#hidden-codecart',
+            valueProperty: 'id',
+            appendToBody: false,
+            dataSource: dataSource
+        });
+    });
+
+</script>

@@ -1,0 +1,294 @@
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            <strong>گزارش غائبین خوابگاه <?php echo $this->myshowdate == '' ? null : "در تاریخ  <span lang='en'>" . $this->myshowdate . "</span>" ?></strong>
+        </h1>
+        <?php
+        $authNamespace = Zend_Registry::get("authNamespace");
+        if ($authNamespace->ACL['dashboard_init'] == 1 || $authNamespace->isAdmin):
+            ?>
+            <ol class="breadcrumb">
+                <li><a href="<?php $this->baseUrl() ?>/dashboard"><i class="fa fa-dashboard"></i> خانه</a></li>
+            </ol>
+            <?php
+        endif;
+        ?>
+        <div class="col-lg-12">
+            <div class="col-md-12 cst-md" style="margin: 10px">                        
+                <div id="progressbar" style="border:1px solid black; border-radius: 6px; "></div>
+                <br>
+                <div id="informations" class="cst-md"></div>
+
+                <div id="noticDiv" style="height: 10px;overflow: auto" class="cst-md"></div>
+            </div>
+        </div>
+        <?php
+        if ($this->alert == 'yes'):
+            ?>
+            <div class="col-lg-12">
+                <div class="col-md-12 cst-md" style="margin: 10px">                        
+                    <div class="fadealerttxt" style="background: #f7acbe;text-align: center;margin-top: 5px;font-size: 15px;">
+                        در کارتابل شمابرای تاریخ  <?php echo $this->myshowdate ?> هنوز دانشجویان غایبی هستند که تعیین تکلیف نشده اند لطفا پس از دریافت گزارش غیبت یا با درج تردد و یا با درج در پرونده آنها را تعیین تکلیف کنید.لازم به ذکر است تا زمانی که این مورد برطرف نشود هیچ یک از امکانات سامانه برای شما فعال نمی باشد. 
+
+                    </div>
+                </div>
+            </div>
+            <?php
+        endif;
+        ?>
+    </section>
+    <!-- Main content -->
+
+    <section class="content" style="border: solid 1px black;margin: 5px">
+        <form  id="absentform" enctype="multipart/form-data" target="loadarea_show"
+               method="post" action="">
+            <!-- Small boxes (Stat box) -->
+
+            <div class="row">
+                <div class="col-lg-9" style="
+
+                     background: azure;
+                     padding: 10px;
+                     ">
+                    <div class="col-lg-3">
+                        <label class="control-label" for="datepicker">تاریخ دریافت گزارش</label>
+
+                    </div>
+                    <div class="col-lg-5">
+
+                        <div class="input-group">
+
+                            <input type="text" id="datepicker" name="datepickreport"  <?php echo $this->mydate == '' ? null : " disabled='disabled' " ?>  class="form-control" value="<?php echo $this->mydate ?>">
+                            <div class="input-group-btn">
+                                <button type="button"  onclick="getdata()" class="btn btn-info">دریافت گزارش</button>
+                            </div><!-- /btn-group -->
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+
+                        <div class="input-group">
+
+                            <div class="input-btn">
+                                <button type="button"  onclick="loadstudata()" class="btn btn-warning">درج در پرونده</button>
+                            </div><!-- /btn-group -->
+                        </div>
+                    </div>
+                    <div class="col-lg-2">
+
+                        <div class="input-group">
+
+                            <div class="input-btn">
+                                <button type="button"  onclick="sendsms()" class="btn btn-warning">ارسال اس ام اس </button>
+                            </div><!-- /btn-group -->
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.row -->
+
+            <!-- Main row -->
+            <div class="row">
+
+                <section class="col-lg-12 connectedSortable">
+
+                    <table id="absentdatatbl" class="table table-striped table-bordered" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th><span>انتخاب همه<input type="checkbox" id="ckbCheckAll"/></span></th>
+                                <th>نام و نام خانوادگی</th>
+                                <th>کد دانشجویی</th>
+                                <th>تاریخ</th>
+                                <th>موبایل</th><!-- <> -->
+                                <th>تلفن سرپرست</th>
+                                <th style="width:400px">ثبت تردد</th>
+                                <th style="">درج در پرونده</th>
+                                <th style="">ارسال پیامک</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                        <tfoot>
+                            <tr>
+
+                                <th>انتخاب</th>
+                                <th>نام و نام خانوادگی</th>
+                                <th>کد دانشجویی</th>
+                                <th>تاریخ</th>
+                                <th>موبایل</th><!-- <> -->
+                                <th>تلفن سرپرست</th>
+                                <th >ثبت تردد</th>
+                                <th style="">درج در پرونده</th>
+                                <th style="">ارسال پیامک</th>
+
+
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                </section><!-- right col -->
+            </div><!-- /.row (main row) -->
+        </form>
+    </section><!-- /.content -->
+</div><!-- /.content-wrapper -->
+<iframe id="loadarea_show" name="loadarea_show" class="cst-md" style="display: none"></iframe>
+<script>
+
+    function regDataTaradod(code, codecart, MYTIME, MYDATE, INOUT_TYPE, COMMENT) {
+        var kindtaradod = '';
+
+        switch (INOUT_TYPE) {
+            case '1':
+                kindtaradod = 'حضور';
+                break
+            case '2':
+                kindtaradod = 'مرخصی روزانه';
+                break;
+            case '3':
+                kindtaradod = 'مرخصی ساعتی';
+                break;
+            default:
+                bootbox.alert({message: 'خطا در دریافت نوع تردد', locale: 'fa'});
+                return;
+                break;
+        }
+        bootbox.confirm({message: " ثبت زمان تردد   " + MYTIME + " از نوع " + kindtaradod + " برای   " + code + " مطمئن هستید؟", locale: 'fa', callback: function (result) {
+                if (result) {
+                    $.ajax({
+                        url: "<?php echo $this->baseUrl() ?>/dashboard/addrowsave",
+                        method: "POST",
+                        data: {codecart: codecart, MYTIME: MYTIME, INOUT_TYPE: INOUT_TYPE, MYDATE: MYDATE, COMMENT: COMMENT}
+                    })
+                            .done(function (result) {
+                                bootbox.alert({message: result, locale: 'fa'});
+
+                            });
+                }
+            }});
+
+    }
+    function regData(code, scode, wikend, date, time, val) {
+
+        var type = "نامشخص";
+        var action = "حذف";
+        if (val == 2) {
+            type = "روزانه";
+        } else if (val == "3") {
+            type = "ساعتی";
+        }
+        if (wikend == 1 || wikend == true) {
+            action = "ثبت";
+        }
+        bootbox.confirm({message: action + " مرخصی  " + type + " برای   " + code + " مطمئن هستید؟", locale: 'fa', callback: function (result) {
+                if (result) {
+                    $.ajax({
+                        url: "<?php echo $this->baseUrl() ?>/dashboard/editkindtrafic",
+                        method: "POST",
+                        data: {code: code, scode: scode, wikend: wikend, date: date, time: time, kindtrafic: val}
+                    })
+                            .done(function (result) {
+                                bootbox.alert({message: result, locale: 'fa'});
+
+                            });
+                }
+            }});
+
+    }
+    $("#ckbCheckAll").click(function () {
+        event.stopPropagation();
+        $(".checkBoxClass").prop('checked', $(this).prop('checked'));
+    });
+    function sendsms() {
+        var countSelect = $('.checkBoxClass').filter(':checked').length;
+        if (countSelect == 0) {
+            bootbox.alert({message: " لطفا دانشجویان را انتخاب کنید", locale: 'fa'});
+        } else {
+            bootbox.confirm({message: " برای   " + $('.checkBoxClass').filter(':checked').length + "نفر میخواهید برای سرپرست آنها پیامک عدم حضور در خوابگاه ارسال کنید آیا مطمئن هستید؟  ", locale: 'fa', callback: function (result) {
+                    if (result) {
+
+                        $("#absentform").attr("action", '<?php $this->baseUrl() ?>/report/sendsmsabsentlist');
+                        document.getElementById('absentform').submit();
+
+                        // alert($('#formfile').serialize());
+                        document.getElementById("informations").innerHTML = "<div style=\"text - align:center; font - weight:bold\">در حال ارسال اطلاعات و انجام عملیات</div>";
+                        //  document.getElementById('loadarea_show').src = '<?php $this->baseUrl() ?>/manager/insertexcel?' + $('#formfile').serialize();
+                    }
+                }});
+        }
+    }
+    function loadstudata() {
+        var countSelect = $('.checkBoxClass').filter(':checked').length;
+        if (countSelect == 0) {
+            bootbox.alert({message: " لطفا دانشجویان را انتخاب کنید", locale: 'fa'});
+        } else {
+            bootbox.confirm({message: " برای   " + $('.checkBoxClass').filter(':checked').length + "نفر میخواهید غیبت در پرونده درج کنیدآیا مطمئن هستید؟  ", locale: 'fa', callback: function (result) {
+                    if (result) {
+                        $("#absentform").attr("action", '<?php $this->baseUrl() ?>/report/insertabsentlist');
+                        // document.getElementById('absentform').action('<?php $this->baseUrl() ?>/report/insertabsentlist');
+                        document.getElementById('absentform').submit();
+                        // alert($('#formfile').serialize());
+                        document.getElementById("informations").innerHTML = "<div style=\"text - align:center; font - weight:bold\">در حال ارسال اطلاعات و انجام عملیات</div>";
+                        //  document.getElementById('loadarea_show').src = '<?php $this->baseUrl() ?>/manager/insertexcel?' + $('#formfile').serialize();
+                    }
+                }});
+        }
+    }
+    function moisrex() {
+        $('.fadealerttxt').fadeTo(200, 0).fadeTo(200, 1);
+    }
+    $(document).ready(function () {
+
+        setInterval(
+                function () {
+                    moisrex();
+                }, 1000);
+        $("#datepicker").persianDatepicker({initialValueType: 'persian', format: 'YYYY-MM-DD'});
+
+        $('#absentdatatbl').DataTable(
+                {
+                    destroy: true,
+                    lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'همه']],
+
+                    "language":
+                            {
+                                url: '/dist/js/datatable/fa.json',
+                            }
+                });
+        getdata();
+
+
+    });
+
+    function getdata() {
+        var date = $('#datepicker').val();
+        if (date == '') {
+            alert('لطفا تاریخ را وارد کنید');
+            return;
+        }
+        $('#absentdatatbl').DataTable(
+                {
+                    destroy: true,
+                    lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'همه']],
+                    dom: 'Blfrtip',
+                    buttons: [{
+                            extend: 'excel',
+                            autoFilter: true,
+                            sheetName: 'گزارش غیبت',
+                            filename: date + 'گزارش غیبت از خوابگاه به تاریخ '
+                        }],
+
+                    "language":
+                            {
+                                url: '/dist/js/datatable/fa.json',
+                            },
+
+                    processing: true,
+                    serverSide: true,
+                    order: [[1, 'asc']],
+                    ajax: '/report/getabsentlist?date=' + $('#datepicker').val(),
+                });
+    }
+
+</script>

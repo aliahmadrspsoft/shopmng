@@ -1,0 +1,88 @@
+<form id="formdevice" method="post" action="device/edit" class="form-horizontal">
+    <input type="hidden"  name="ID" value="<?php echo $this->datadevice[0]['ID'] ?>" />
+
+    <div class="box-body">
+        <div class="form-group">
+            <label for="kindset" class="col-sm-2 control-label">نوع دستگاه</label>
+            <div class="col-sm-10">
+                <select  class="form-control" name='KINDSET'  id="kindset">
+                    <option <?php echo $this->datadevice[0]['KINDSET'] == 1 ? "selected='selected'" : "" ?> value='1'>biostation</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="nameset" class="col-sm-2 control-label">نام دستگاه</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" value="<?php echo $this->datadevice[0]['NAMESET'] ?>" id="nameset" name="NAMESET" placeholder="نام دستگاه">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="ipset" class="col-sm-2 control-label">ip</label>
+            <div class="col-sm-10">
+                <input type="text"   class="form-control" id="ipset" name="IPSET" value="<?php echo $this->datadevice[0]['IPSET'] ?>" placeholder="ip ">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="portset" class="col-sm-2 control-label">port  </label>
+            <div class="col-sm-10">
+                <input type="text"  class="form-control" id="portset" name="PORTSET" value="<?php echo $this->datadevice[0]['PORTSET'] ?>" placeholder="port">
+
+
+            </div>
+        </div>
+          <div class="form-group">
+            <label for="iphost" class="col-sm-2 control-label">ip سرور</label>
+            <div class="col-sm-10">
+                <input type="text"   class="form-control" id="iphost" name="IPHOST" value="<?php echo $this->datadevice[0]['IPHOST'] ?>" placeholder="ip سرور ">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="gpsset" class="col-sm-2 control-label">موقعیت  </label>
+            <div class="col-sm-10">
+                <select  class="form-control" name='GPSSET'  id="gpsset">
+                    <option <?php echo $this->datadevice[0]['GPSSET'] == 1 ? "selected='selected'" : "" ?> value='1'>خوابگاه</option>
+                </select>
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="numset" class="col-sm-2 control-label">شماره دستگاه  </label>
+            <div class="col-sm-10">
+                <input type="number" name="NUMSET"  class="form-control" id="numset" value="<?php echo intval($this->datadevice[0]['NUMSET']) ?>" placeholder="شماره دستگاه ">
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="statusset" class="col-sm-2 control-label">وضعیت  </label>
+            <div class="col-sm-10">
+                <select  class="form-control" name='STATUSSET'  id="statusset">
+                    <option <?php echo $this->datadevice[0]['STATUSSET'] == 1 ? "selected='selected'" : "" ?> value='1'>آنلاین</option>
+                    <option <?php echo $this->datadevice[0]['STATUSSET'] == 2 ? "selected='selected'" : "" ?> value='2'>آفلاین</option>
+
+                </select>
+
+            </div>
+        </div>
+          <div class="form-group">
+            <label for="GETDATATYPE" class="col-sm-2 control-label">بازه تخلیه  </label>
+            <div class="col-sm-10">
+                <select  class="form-control" name='GETDATATYPE'  id="GETDATATYPE">
+                    <option <?php echo $this->datadevice[0]['GETDATATYPE'] == 1 ? "selected='selected'" : "" ?> value='1'>یک ماه قبل</option>
+                    <option <?php echo $this->datadevice[0]['GETDATATYPE'] == 2 ? "selected='selected'" : "" ?> value='2'>همه</option>
+                    <option <?php echo $this->datadevice[0]['GETDATATYPE'] == 3 ? "selected='selected'" : "" ?> value='3'>روز جاری</option>
+
+                </select>
+            </div>
+        </div>
+           <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" <?php if ($this->datadevice[0]['DELETEDATA']) echo "checked='checked'"; ?> value="1" name="DELETEDATA">حذف پس از تخلیه
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div><!-- /.box-body -->
+
+</form>

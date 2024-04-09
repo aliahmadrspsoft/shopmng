@@ -1,0 +1,114 @@
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+
+            <strong>گزارش حاضرین <?php echo $this->myshowdate == '' ? null : "در تاریخ   <span lang='fa'>" . $this->myshowdate . "</span>" ?></strong>
+        </h1>
+        <?php
+        $authNamespace = Zend_Registry::get("authNamespace");
+        if ($authNamespace->ACL['dashboard_init'] == 1 || $authNamespace->isAdmin):
+            ?>
+            <ol class="breadcrumb">
+                <li><a href="<?php $this->baseUrl() ?>/dashboard"><i class="fa fa-dashboard"></i> خانه</a></li>
+            </ol>
+            <?php
+        endif;
+        ?>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <!-- Small boxes (Stat box) -->
+        <div class="row">
+            <div class="col-lg-3">
+                <label class="control-label" for="datepicker">تاریخ دریافت گزارش</label>
+                <div class="input-group">
+                    <input type="text" id="datepicker" class="form-control" <?php echo $this->mydate == '' ? null : " disabled='disabled' " ?> value="<?php echo $this->mydate ?>">
+                    <div class="input-group-btn">
+                        <button type="button"  onclick="getdata()" class="btn btn-info">دریافت گزارش</button>
+                    </div><!-- /btn-group -->
+                </div>
+            </div>
+        </div><!-- /.row -->
+        <!-- Main row -->
+        <div class="row">
+
+            <section class="col-lg-12 connectedSortable">
+                <table id="persentdatatbl" class="table table-striped table-bordered" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>نام و نام خانوادگی</th>
+
+                            <th>کد دانشجویی</th>
+                            <th>تاریخ</th>
+                            <th>ساعت</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>نام و نام خانوادگی</th>
+
+                            <th>کد دانشجویی</th>
+                            <th>تاریخ</th>
+                            <th>ساعت</th>
+                        </tr>
+                    </tfoot>
+                </table>
+
+
+
+
+            </section><!-- right col -->
+        </div><!-- /.row (main row) -->
+
+    </section><!-- /.content -->
+</div><!-- /.content-wrapper -->
+<script>
+    $(document).ready(function () {
+        $("#datepicker").persianDatepicker({initialValueType: 'persian', format: 'YYYY-MM-DD'});
+
+        $('#persentdatatbl').DataTable(
+                {
+                    destroy: true,
+                    lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'همه']],
+                    "language":
+                            {
+                                url: '/dist/js/datatable/fa.json',
+                            }
+                });
+
+    });
+
+    function getdata() {
+        var date = $('#datepicker').val();
+        if (date == '') {
+            bootbox.alert({message: 'لطفا تاریخ را وارد کنید', locale: 'fa'});
+            return;
+        }
+        $('#persentdatatbl').DataTable(
+                {
+
+                    destroy: true,
+                    dom: 'Blfrtip', buttons: [{
+                            extend: 'excel',
+                            filename: date+ 'گزارش حاضرین در خوابگاه به تاریخ '
+                        }],
+
+                    lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'همه']],
+                    "language":
+                            {
+                                url: '/dist/js/datatable/fa.json',
+                            },
+                    processing: true,
+                    serverSide: true,
+
+                    ajax: '/report/getpersenrlist?date=' + $('#datepicker').val(),
+                });
+    }
+    getdata();
+</script>

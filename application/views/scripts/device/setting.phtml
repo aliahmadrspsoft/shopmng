@@ -1,0 +1,74 @@
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+
+            <small>تنظیمات سیستم</small>
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="<?php $this->baseUrl() ?>/dashboard"><i class="fa fa-dashboard"></i> خانه</a></li>
+        </ol>
+    </section>
+    <section class="content">
+        <div class="col-sm-12"> 
+            <form id="formsetting" method="post" action="/device/setting" class="form-horizontal">
+                <input type="hidden"  name="ID" value="<?php echo $this->datasetting[0]['ID'] ?>"/>
+
+                <div class="box-body">
+
+                    <div class="form-group">
+                        <label for="smsurl" class="col-sm-3 control-label">آدرس وب سرویس ارسال پیامک</label>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control" value="<?php echo $this->datasetting[0]['SMSURL'] ?>" id="SMSURL" name="SMSURL" placeholder="آدرس وب یرویس ارسال پیامک ">
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" <?php if ($this->datasetting[0]['ABSENTSMSACTIVE']) echo "checked='checked'"; ?> value="1" name="ABSENTSMSACTIVE">ارسال اس ام اس غیبت
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" <?php if ($this->datasetting[0]['WIKENDSMSACTIVE']) echo "checked='checked'"; ?> value="1" name="WIKENDSMSACTIVE">ارسال اس ام اس مرخصی
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- /.box-body -->
+
+            </form>
+        </div>
+        <div class="row"> 
+            <div class="">
+                <div id="settingsave"></div>
+                <button type="button" onclick="savesetting();" class="btn btn-primary">ذخیره</button>
+            </div>
+        </div>
+    </section>
+    <script>
+        function savesetting(id) {
+            $.ajax({
+                url: "/device/settingsave",
+                method: "POST",
+                data: $('#formsetting').serialize(),
+            })
+                    .done(function (html) {
+                        $('#settingsave').html(html);
+                        setTimeout(function () {
+                            $('#settingsave').html("");
+                        }, 3000);
+
+                    });
+        }
+    </script>
+
+
+

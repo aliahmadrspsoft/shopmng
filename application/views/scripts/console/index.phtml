@@ -1,0 +1,27 @@
+
+
+<div id="backgroundChanger" style='  position: fixed;
+     top: 50px; right: 230px; bottom: 0; left: 0;
+     border: 15px solid orange'>
+
+
+    <script src="<?php echo $this->baseUrl() ?>/dist/js/PhotoFlip.js"></script>
+    <script type="text/javascript">
+
+        images = new Array;
+        images[0] = "url('<?php echo $this->baseUrl() ?>/img/slider/1.jpg')";
+        images[1] = "url('<?php echo $this->baseUrl() ?>/img/slider/2.jpg')";
+        images[2] = "url('<?php echo $this->baseUrl() ?>/img/slider/3.jpg')";
+        images[3] = "url('<?php echo $this->baseUrl() ?>/img/slider/4.jpg')";
+        images[4] = "url('<?php echo $this->baseUrl() ?>/img/slider/5.jpg')";
+
+
+        // Set the interval in milliseconds and Transtion time in seconds
+        $("#backgroundChanger").PhotoFlip({'interval': 3000, 'transitionTime': '1s'}, images);
+    </script>
+
+</div>
+
+
+
+

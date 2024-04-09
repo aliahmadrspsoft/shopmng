@@ -1,0 +1,31 @@
+<?php 
+$this->headMeta()->appendHttpEquiv('Content-Type', 'text/html;charset=utf-8');
+$this->headTitle()->setSeparator(' - ');
+$this->headTitle('دانشکده ریاضی و کامپیوتر خوانسار');
+
+echo $this->doctype(); ?>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"> 
+<head>
+    <?php echo $this->headMeta(); ?> 
+    <?php echo $this->headTitle(); ?>
+    <?php echo $this->headLink()->prependStylesheet($this->baseUrl().'/css/core.min.css'); ?> 
+	<?php echo $this->headLink()->prependStylesheet($this->baseUrl().'/css/index.css'); ?> 
+	<style>
+	 	@font-face {
+  font-family: yekan-regular;
+  src: url('/font/yekan-font/yekan-regular.eot');
+  src: url('/font/yekan-font/yekan-regular.eot?#iefix') format('/font/yekan-font/yekan-regular-opentype'),
+       url('/font/yekan-font/yekan-regular.woff') format('woff'),
+       url('/font/yekan-font/yekan-regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+	</style>
+</head>
+  <body class="skin-blue sidebar-mini" style="font-family:yekan-regular">
+    <div class="wrapper">
+    <h1><?php echo $this->escape($this->title); ?></h1>
+    <?php echo $this->layout()->content; ?>
+</div>
+</body>
+</html>
